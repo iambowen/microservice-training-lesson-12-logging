@@ -38,7 +38,7 @@ services:
     logging:  
       driver: fluentd
       options:
-        fluentd-address: 192.168.1.247:24224
+        fluentd-address: 192.168.1.247:24224  #主机ip地址
         tag: docker.{{.FullID}}
 
 volumes:

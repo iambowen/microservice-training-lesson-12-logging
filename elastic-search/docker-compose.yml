@@ -18,6 +18,28 @@ services:
         # ELASTICSEARCH_URL: http://elasticsearch:9200
     depends_on:
       - elasticsearch
+  
+  fluentd:
+      container_name: fluentd
+      build: ./fluentd
+      volumes:
+        - ~/Library/Containers/com.docker.docker/Data/com.docker.driver.amd64-linux/Docker.qcow2:/var/lib/docker/containers
+      links:
+        - elasticsearch:elasticsearch
+      ports:
+        - '24224:24224'
+  
+  event-service:
+    image: iambowen/event-service
+    links:
+      - fluentd:fluentd
+    ports:
+      - '8088:8080'
+    logging:  
+      driver: fluentd
+      options:
+        fluentd-address: 192.168.1.247:24224
+        tag: docker.{{.FullID}}
 
 volumes:
   elasticsearch-data:
